@@ -1,0 +1,84 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "DM Sans", sans-serif;
+  --font-display: "Cormorant Garamond", serif;
+  --color-lavender: #a78bca;
+  --color-lavender-deep: #75639b;
+  --color-pink: #f4c6d7;
+  --color-peach: #ffd6b8;
+  --color-cream: #fff4e8;
+  --color-gold: #ffe5a3;
+  --color-ink: #3f3654;
+  --color-night: #242039;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-sans);
+  color: var(--color-ink);
+  background: #242039;
+}
+
+button,
+input,
+select {
+  font-family: inherit;
+}
+
+.glass {
+  background: linear-gradient(180deg, rgba(255, 244, 232, 0.46), rgba(255, 255, 255, 0.2));
+  border: 1px solid rgba(255, 255, 255, 0.48);
+  box-shadow: 0 16px 50px rgba(63, 54, 84, 0.16);
+  backdrop-filter: blur(18px);
+}
+
+.glass-dark {
+  background: linear-gradient(180deg, rgba(36, 32, 57, 0.72), rgba(63, 54, 84, 0.55));
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  box-shadow: 0 18px 50px rgba(20, 16, 36, 0.35);
+  backdrop-filter: blur(18px);
+  color: #fff4e8;
+}
+
+@keyframes drift {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(-18px);
+  }
+}
+
+@keyframes twinkle {
+  50% {
+    opacity: 0.25;
+  }
+}
+
+@keyframes rainfall {
+  from {
+    transform: translateY(-12%);
+  }
+  to {
+    transform: translateY(12%);
+  }
+}
+
+.drift {
+  animation: drift 7s ease-in-out infinite alternate;
+}
+
+.twinkle {
+  animation: twinkle 3.4s ease-in-out infinite;
+}
+
+.rainfall {
+  animation: rainfall 1.8s linear infinite;
+}
