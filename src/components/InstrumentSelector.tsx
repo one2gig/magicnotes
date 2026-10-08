@@ -5,11 +5,18 @@ interface InstrumentSelectorProps {
   value: InstrumentId;
   onChange: (id: InstrumentId) => void;
   layout?: "vertical" | "horizontal";
+  dense?: boolean;
 }
 
-export function InstrumentSelector({ value, onChange, layout = "vertical" }: InstrumentSelectorProps) {
+export function InstrumentSelector({ value, onChange, layout = "vertical", dense = false }: InstrumentSelectorProps) {
   return (
-    <div className={cn("glass rounded-3xl p-2", layout === "horizontal" && "flex flex-wrap gap-2")}>
+    <div
+      className={cn(
+        layout === "vertical" && "glass rounded-3xl p-2",
+        layout === "horizontal" && !dense && "flex flex-wrap gap-2",
+        dense && "flex flex-nowrap gap-2 overflow-x-auto",
+      )}
+    >
       {INSTRUMENTS.map((instrument) => {
         const selected = instrument.id === value;
         return (
@@ -18,16 +25,18 @@ export function InstrumentSelector({ value, onChange, layout = "vertical" }: Ins
             type="button"
             onClick={() => onChange(instrument.id)}
             className={cn(
-              "flex items-center gap-3 rounded-2xl px-3 py-2 text-left transition",
-              layout === "vertical" ? "w-40" : "shrink-0",
-              selected ? "bg-lavender/70 text-ink shadow" : "text-ink/80 hover:bg-white/30",
+              "flex items-center rounded-2xl text-left transition",
+              layout === "vertical" ? "w-40 gap-3 px-3 py-2" : "shrink-0 gap-2 px-2.5 py-1.5",
+              selected ? "bg-lavender/70 text-ink shadow" : dense ? "text-cream/90 hover:bg-white/15" : "text-ink/80 hover:bg-white/30",
             )}
             aria-pressed={selected}
           >
             <InstrumentMark id={instrument.id} />
             <span>
-              <span className="block text-sm font-medium">{instrument.label}</span>
-              <span className="block text-[11px] opacity-70">{instrument.description}</span>
+              <span className={cn("block text-sm font-medium", dense && "whitespace-nowrap")}>{instrument.label}</span>
+              {layout === "vertical" || !dense ? (
+                <span className="block text-[11px] opacity-70">{instrument.description}</span>
+              ) : null}
             </span>
           </button>
         );

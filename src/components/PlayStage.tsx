@@ -85,20 +85,20 @@ export function PlayStage({ preferences, audio }: PlayStageProps) {
   const loading = camera.status === "loading" || (camera.status === "live" && tracker.status === "loading");
 
   return (
-    <div className="relative z-10 flex h-svh flex-col p-3 md:p-4">
+    <div className="relative z-10 flex h-svh flex-col p-2 md:p-4">
       <div className="relative min-h-0 flex-1 overflow-hidden rounded-[28px] border border-white/25 bg-black/10 shadow-[0_30px_80px_rgba(36,32,57,0.28)]">
         <CameraView videoRef={camera.videoRef} mirror={prefs.mirrorCamera} live={camera.status === "live"} />
         <HandOverlay canvasRef={canvasRef} />
         <div className={`pointer-events-none absolute inset-0 z-10 bg-gradient-to-b ${environment.wash}`} />
 
-        <header className="absolute inset-x-4 top-4 z-30 flex items-start justify-between gap-3">
-          <div>
-            <p className="font-display text-3xl text-cream drop-shadow">
-              Little Melodies <Sparkles className="mb-1 inline size-4" />
+        <header className="absolute inset-x-2 top-2 z-30 flex items-start justify-between gap-2 md:inset-x-4 md:top-4 md:gap-3">
+          <div className="min-w-0">
+            <p className="font-display text-xl text-cream drop-shadow md:text-3xl">
+              Little Melodies <Sparkles className="mb-1 inline size-3.5 md:size-4" />
             </p>
-            <p className="text-sm text-cream/80">Music at your fingertips</p>
+            <p className="hidden text-sm text-cream/80 md:block">Music at your fingertips</p>
           </div>
-          <div className="flex gap-2">
+          <div className="flex shrink-0 gap-1.5 md:gap-2">
             <IconButton
               label={camera.status === "live" ? "Stop camera" : "Start camera"}
               pressed={camera.status === "live"}
@@ -140,10 +140,33 @@ export function PlayStage({ preferences, audio }: PlayStageProps) {
           onEnableAudio={audio.unlock}
         />
 
-        <footer className="absolute inset-x-3 bottom-3 z-30 space-y-3">
-          <SongStrip guide={songs} onListen={() => void songs.listen(audio.engine)} />
-          <div className="glass-dark rounded-[28px] px-4 py-3">
-            <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
+        <footer className="absolute inset-x-2 z-30 space-y-3 bottom-[max(0.5rem,env(safe-area-inset-bottom))] md:inset-x-3 md:bottom-3">
+          <div className="hidden md:block">
+            <SongStrip guide={songs} onListen={() => void songs.listen(audio.engine)} />
+          </div>
+          <div className="glass-dark max-h-[46svh] space-y-2 overflow-y-auto rounded-[24px] px-3 py-2 md:max-h-none md:space-y-3 md:rounded-[28px] md:px-4 md:py-3">
+            <div className="flex items-center gap-2 md:hidden">
+              <SongStrip part="picker" guide={songs} onListen={() => void songs.listen(audio.engine)} />
+              <VolumeControl
+                compact
+                volume={prefs.volume}
+                muted={prefs.muted}
+                onVolume={(volume) => update({ volume, muted: false })}
+                onToggleMute={() => update({ muted: !prefs.muted })}
+              />
+              <button
+                type="button"
+                aria-label="Show guide"
+                onClick={() => setGuideRequested(true)}
+                className="grid size-9 shrink-0 place-items-center rounded-full bg-white/10 text-cream"
+              >
+                <BookOpen className="size-4" />
+              </button>
+            </div>
+            <div className="md:hidden">
+              <SongStrip part="sheet" guide={songs} onListen={() => void songs.listen(audio.engine)} />
+            </div>
+            <div className="hidden items-center justify-between gap-3 md:flex">
               <VolumeControl
                 volume={prefs.volume}
                 muted={prefs.muted}
@@ -159,8 +182,19 @@ export function PlayStage({ preferences, audio }: PlayStageProps) {
                 Show Guide
               </Button>
             </div>
-            <div className="mt-3 space-y-2 md:hidden">
-              <InstrumentSelector value={prefs.instrument} onChange={(instrument) => update({ instrument })} layout="horizontal" />
+            <div className="md:hidden">
+              <NoteIndicators
+                heldNotes={heldNotes}
+                targetNote={songs.song && songs.step < songs.song.notes.length ? songs.song.notes[songs.step] : undefined}
+              />
+            </div>
+            <div className="space-y-2 md:hidden">
+              <InstrumentSelector
+                value={prefs.instrument}
+                onChange={(instrument) => update({ instrument })}
+                layout="horizontal"
+                dense
+              />
               <EnvironmentSelector
                 value={prefs.environment}
                 onChange={(environmentId) => update({ environment: environmentId })}
@@ -221,7 +255,7 @@ function IconButton({
       aria-label={label}
       aria-pressed={pressed}
       onClick={onClick}
-      className={`glass grid size-11 place-items-center rounded-full text-ink ${pressed ? "bg-white/70" : ""}`}
+      className={`glass grid size-9 place-items-center rounded-full text-ink md:size-11 ${pressed ? "bg-white/70" : ""}`}
     >
       {children}
     </button>

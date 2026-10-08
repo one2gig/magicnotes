@@ -17,7 +17,13 @@ interface EnvironmentSelectorProps {
 
 export function EnvironmentSelector({ value, onChange, layout = "vertical" }: EnvironmentSelectorProps) {
   return (
-    <div className={cn("glass rounded-full p-2", layout === "horizontal" ? "flex gap-2" : "flex flex-col gap-2")}>
+    <div
+      className={cn(
+        layout === "horizontal"
+          ? "flex flex-nowrap gap-2 overflow-x-auto"
+          : "glass flex flex-col gap-2 rounded-full p-2",
+      )}
+    >
       {ENVIRONMENTS.map((environment) => {
         const Icon = icons[environment.id];
         const selected = environment.id === value;
@@ -29,12 +35,12 @@ export function EnvironmentSelector({ value, onChange, layout = "vertical" }: En
             aria-pressed={selected}
             aria-label={environment.label}
             className={cn(
-              "flex items-center gap-2 rounded-full px-3 py-2 text-sm transition",
-              selected ? "bg-white/70 text-ink shadow" : "text-ink/80 hover:bg-white/30",
+              "flex shrink-0 items-center gap-2 rounded-full px-3 py-2 text-sm transition",
+              selected ? "bg-white/70 text-ink shadow" : layout === "horizontal" ? "text-cream/90 hover:bg-white/15" : "text-ink/80 hover:bg-white/30",
             )}
           >
             <Icon className="size-4" />
-            <span className={layout === "vertical" ? "w-14 text-left" : ""}>{environment.label}</span>
+            <span className={layout === "vertical" ? "w-14 text-left" : "whitespace-nowrap"}>{environment.label}</span>
           </button>
         );
       })}
